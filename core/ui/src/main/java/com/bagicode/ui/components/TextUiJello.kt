@@ -46,17 +46,22 @@ fun JelloTextHeader(
 @Composable
 fun JelloTextHeaderPreview() {
     JelloTextHeader(
-        text = "Roby ganteng banget nih dan tertamvan didunia"
+        text = "Roby ganteng banget nih dan tertamvan didunia",
     )
 }
 
 @Composable
-fun JelloTextRegularWithClick(){
+fun JelloTextRegularWithClick(
+    text: String = "Please fill E-mail & password to login your app account.",
+    textClick: String = " Sign Up",
+    onClick: () -> Unit = {},
+    modifier: Modifier = Modifier.padding(16.dp)
+){
     val annotatedText = buildAnnotatedString {
-        append("Please fill E-mail & password to login your app account.")
+        append(text)
         pushStringAnnotation(
             tag = "TEXT_CLICK",
-            annotation = " Sign Up"
+            annotation = textClick
         )
         withStyle(
             style = SpanStyle(
@@ -64,12 +69,31 @@ fun JelloTextRegularWithClick(){
                 fontWeight = FontWeight.Bold
             )
         ){
-            append(" Sign Up")
+            append(textClick)
         }
         pop()
 
     }
-    ClickableText(text = annotatedText) { }
+    ClickableText(
+        text = annotatedText,
+        modifier = modifier,
+        style = TextStyle(
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Normal,
+            lineHeight = 24.sp,
+            textAlign = TextAlign.Left
+        ),
+        onClick = { offset ->
+            annotatedText.getStringAnnotations(
+                tag = "TEXT_CLICK",
+                start = offset,
+                end = offset
+            ).firstOrNull()?.let {
+                onClick
+            }
+
+        }
+    )
 
 }
 
